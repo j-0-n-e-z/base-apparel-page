@@ -11,6 +11,6 @@
 
 @layer components {
   .heading {
-    @apply text-[65px] uppercase tracking-[1.05rem] leading-[4.3rem];
+    @apply lg:text-[65px] text-[40px] uppercase lg:tracking-[1.05rem] tracking-[.7rem] lg:leading-[4.3rem] leading-[2.7rem];
   }
 }
