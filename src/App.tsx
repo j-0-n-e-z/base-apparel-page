@@ -1,44 +1,26 @@
-import { FormEvent, useState } from 'react'
-
-const errors = {
-	required: 'This field is required',
-	invalid: 'Please provide a valid email'
-}
+import { useFormik } from 'formik'
+import * as Yup from 'yup'
 
 export default function App() {
-	const [isShowError, setIsShowError] = useState(false)
-	const [error, setError] = useState('')
-	const [email, setEmail] = useState('')
-
-	function handleFormSubmit(e: FormEvent) {
-		e.preventDefault()
-	}
-
-	function handleSubmitClick() {
-		if (email && error) {
-			setIsShowError(true)
+	const formik = useFormik({
+		initialValues: { email: '' },
+		validationSchema: Yup.object({
+			email: Yup.string()
+				.required('Email is required')
+				.matches(
+					/[A-Za-z\d._%+-]+@[A-Za-z\d.-]+\.[A-Za-z]{2,}/,
+					'Please provide a valid email'
+				)
+				.max(30, 'Email cannot be longer than 30 characters')
+		}),
+		onSubmit: () => {
+			console.log(formik.values)
+			formik.resetForm()
 		}
-		if (!email) {
-			setIsShowError(true)
-			setError(errors.required)
-		}
-	}
-
-	function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
-		setEmail(e.target.value)
-		if (error === errors.required || e.target.value === '') {
-			setIsShowError(false)
-		}
-		if (e.target.validity.patternMismatch) {
-			setError(errors.invalid)
-		} else {
-			setError('')
-			setIsShowError(false)
-		}
-	}
+	})
 
 	return (
-		<main className='font-["Josefin_Sans"] h-screen min-h-screen bg-gradientWhite'>
+		<main className='font-JosefinSans h-screen min-h-screen bg-gradientWhite'>
 			<section className='flex lg:flex-row flex-col h-full'>
 				<div className='lg:w-7/12 lg:px-[164px] lg:py-16 lg:bg-pattern bg-no-repeat bg-cover'>
 					<img
@@ -65,29 +47,29 @@ export default function App() {
 					<div className='lg:mt-10 mt-[30px] lg:p-0 px-10'>
 						<form
 							className='flex relative lg:w-[calc(100%-4rem)]'
-							onSubmit={handleFormSubmit}
+							onSubmit={formik.handleSubmit}
 						>
 							<input
-								className={`outline-none text-darkGrayishRed placeholder-desaturatedRed/50  bg-transparent border-[1px] border-desaturatedRed/50 rounded-full lg:px-8 px-6 lg:py-4 py-3 w-full lg:text-base text-[14px] ${
-									isShowError && 'border-softRed'
+								className={`outline-none text-darkGrayishRed placeholder-desaturatedRed/50  bg-transparent border-[1px] rounded-full lg:px-8 px-6 lg:py-4 py-3 w-full lg:text-base text-[14px] ${
+									formik.errors.email && formik.touched.email
+										? 'border-softRed'
+										: 'border-desaturatedRed/50'
 								}`}
 								type='email'
 								name='email'
-								value={email}
+								value={formik.values.email}
 								placeholder='Email Address'
-								pattern='[A-Za-z\d._%+\-]+@[A-Za-z\d.\-]+\.[A-Za-z]{2,}'
-								onChange={handleInputChange}
-								required
+								onChange={formik.handleChange}
+								onBlur={formik.handleBlur}
 								onInvalid={e => e.preventDefault()}
 							/>
 							<button
 								type='submit'
-								onClick={handleSubmitClick}
 								className='absolute right-0 bg-gradient-to-br bg-size-200 bg-pos-0 hover:bg-pos-100 from-lightPink via-darkPink to-lightPink hover:via-lightPink hover:to-lightPink transition-all duration-300 rounded-full grid place-items-center lg:px-[43px] px-[26px] lg:py-[19px] py-[13px] lg:shadow-buttonDesktop shadow-buttonMobile'
 							>
 								<img src='./assets/images/icon-arrow.svg' alt='arrow' />
 							</button>
-							{isShowError && (
+							{formik.errors.email && formik.touched.email && (
 								<img
 									className='absolute lg:right-28 right-20 top-[50%] -translate-y-[50%]'
 									src='./assets/images/icon-error.svg'
@@ -95,8 +77,10 @@ export default function App() {
 								/>
 							)}
 						</form>
-						{isShowError && (
-							<p className='self-start text-softRed text-sm mt-3 lg:ml-8 ml-7'>{error}</p>
+						{formik.errors.email && formik.touched.email && (
+							<p className='self-start text-softRed text-sm mt-3 lg:ml-8 ml-7'>
+								{formik.errors.email}
+							</p>
 						)}
 					</div>
 				</div>

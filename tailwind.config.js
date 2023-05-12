@@ -1,4 +1,6 @@
 /** @type {import('tailwindcss').Config} */
+import defaultTheme from 'tailwindcss/defaultTheme'
+
 export default {
 	content: ['./index.html', './src/**/*.{ts,tsx}'],
 	theme: {
@@ -13,7 +15,7 @@ export default {
 			backgroundImage: {
 				gradientWhite:
 					'linear-gradient(135deg, hsl(0, 0%, 100%), hsl(0, 100%, 98%))',
-				pattern: "url('/assets/images/bg-pattern-desktop.svg')"
+				pattern: 'url(/assets/images/bg-pattern-desktop.svg)'
 			},
 			backgroundSize: {
 				'size-200': '200% 200%'
@@ -25,6 +27,9 @@ export default {
 			boxShadow: {
 				buttonDesktop: '0 10px 25px 0 hsl(0, 36%, 70%)',
 				buttonMobile: '0 7px 10px 0 hsl(0, 36%, 70%)'
+			},
+			fontFamily: {
+				JosefinSans: ['Josefin Sans', ...defaultTheme.fontFamily.sans]
 			}
 		}
 	},
